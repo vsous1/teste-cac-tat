@@ -2,14 +2,11 @@
 
 const longText = 'A Ética a Nicômaco ou Ética a Nicómaco é a principal obra de Aristóteles sobre Ética. Nela se expõe sua concepção teleológica e eudaimonista de racionalidade prática, sua concepção da virtude como mediania e suas considerações acerca do papel do hábito e da prudência'
 
-
-
 describe('Central de Atendimento ao Cliente TAT', function() {
+  const THREE_SECONDS_IN_MS = 3000
     
   beforeEach(() => {
   
-    
-
     cy.visit('./src/index.html')
     })
   
@@ -20,88 +17,64 @@ describe('Central de Atendimento ao Cliente TAT', function() {
   
     it('Prenche os dados do formulário e verifica se as respostas foram enviadas', function() {
       
-      cy.get('#firstName').type('Victor')
-      cy.get('#lastName').type('Sousa')
-      cy.get('#email').type('teste@teste.com')
-      cy.get('#open-text-area').type(longText, {delay: 0})
-      cy.get('.button').click()
+      cy.clock()
+      
+      cy.fillMandatoryFieldsAndSubmit()
       cy.get('.success').should('be.visible')
+      cy.tick(THREE_SECONDS_IN_MS)
+      cy.get('.success').should('not.be.visible')
     })
 
     it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
-      
-      cy.get('#firstName').type('Victor')
-      cy.get('#lastName').type('Sousa')
-      cy.get('#email').type('teste@teste,com')
-      cy.get('#open-text-area').type(longText, {delay: 0})
-      cy.get('.button').click()
+      cy.clock()
+
+      cy.fillIncorrectFields()
       cy.get('.error').should('be.visible')
+      cy.tick(THREE_SECONDS_IN_MS)
+      cy.get('.error').should('not.be.visible')
     })
 
     it('se um valor não-numérico for digitado, seu valor continuará vazio.', function() {
-      
-        cy.get('#firstName').type('Victor')
-        cy.get('#lastName').type('Sousa')
-        cy.get('#email').type('teste@teste,com')
-        cy.get('#open-text-area').type(longText, {delay: 0})
-        cy.get('#phone').type('abcdefgh')
-          .should('have.value', '')
+        
+      cy.get('#phone').type('abcdefgh')
+        .should('have.value', '')
     })
 
     it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
       
-      cy.get('#firstName').type('Victor')
-      cy.get('#lastName').type('Sousa')
-      cy.get('#email').type('teste@teste,com')
-      cy.get('#open-text-area').type(longText, {delay: 0})
-      cy.get('#phone').type('abcdefgh')
-      .get('#phone-checkbox')
-      .check()
-      cy.contains('.button', 'Enviar').click()
-      
-      cy.get('.error').should('be.visible')
-    })
-      
-    it ('preenche e limpa os campos nome, sobrenome, email e telefone', function() {
-      
-      cy.get('#firstName')
-      .type('Victor')
-      .should('have.value', 'Victor')
-      .clear()
-      .should('have.value', '')
-      cy.get('#lastName')
-      .type('Sousa')
-      .should('have.value', 'Sousa')
-      .clear()
-      .should('have.value', '')
-      cy.get('#email')
-      .type('email1@gmail.com')
-      .should('have.value','email1@gmail.com')
-      .clear()
-      .should('have.value', '')
-      cy.get('#phone')
-      .type('12345678')
-      .should('have.value','12345678')
-      .clear()
-      .should('have.value', '')
-      cy.get('#open-text-area')
-      .type('teste')
-      .should('have.value', 'teste')
-      .clear()
-      .should('have.value', '')
-    })
+      cy.clock()
 
-    it ('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function(){
-
+      cy.fillIncorrectFields()
+        .get('#phone-checkbox')
+        .check()
       cy.contains('.button', 'Enviar').click()
       cy.get('.error').should('be.visible')
+      cy.tick(THREE_SECONDS_IN_MS)
+      cy.get('.error').should('not.be.visible')
+    })
+      
+    it('preenche e limpa os campos nome, sobrenome, email e telefone', function() {
+      
+      cy.fillAndClear()
+    })
 
+    it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function(){
+
+      cy.clock()
+      
+      cy.contains('.button', 'Enviar').click()
+      cy.get('.error').should('be.visible')
+      cy.tick(THREE_SECONDS_IN_MS)
+      cy.get('.error').should('not.be.visible')
     })
   
     it('envia o formuário com sucesso usando um comando customizado', function() {
-     
+      cy.clock()
+
       cy.fillMandatoryFieldsAndSubmit()
       cy.get('.success').should('be.visible')
+      cy.tick(THREE_SECONDS_IN_MS)
+      cy.get('.success').should('not.be.visible')
     })
 
     it ('seleciona um produto (YouTube) por seu texto', function(){
@@ -109,28 +82,28 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     cy.get('#product').select('YouTube')
    })
 
-    it ('seleciona um produto (Mentoria) por seu valor (value)', function(){
+    it('seleciona um produto (Mentoria) por seu valor (value)', function(){
       
       cy.get('#product')
       .select('Mentoria')
       .should('have.value', 'mentoria')   
     })
 
-    it ('seleciona um produto (Blog) por seu índice', function(){
+    it('seleciona um produto (Blog) por seu índice', function(){
       
       cy.get('#product')
       .select(1)
       .should('have.value', 'blog')
     })
 
-    it ('marca o tipo de atendimento "Feedback"', function(){
+    it('marca o tipo de atendimento "Feedback"', function(){
       
       cy.get('input[type="radio"][value="feedback"]')
         .click()
         .should('have.value','feedback')
     })
 
-    it ('marca cada tipo de atendimento', function() {
+    it('marca cada tipo de atendimento', function() {
       cy.get('input[type="radio"]')
         .should('have.length', 3) //conta quantos elementos tem
         .each(function($radio) {  // função para selecionar os 3 elementos do botão do tipo radio
@@ -139,7 +112,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         })
        })
 
-    it ('marca ambos checkboxes, depois desmarca o último', function(){
+    it('marca ambos checkboxes, depois desmarca o último', function(){
       cy.get('input[type="checkbox"]')
       .check()
       .should('be.checked')
@@ -148,7 +121,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       .should('not.be.checked')
     })
 
-    it ('seleciona um arquivo da pasta fixtures', function() {
+    it('seleciona um arquivo da pasta fixtures', function() {
       cy.get('#file-upload')
         .should('not.have.value')   
         .selectFile('./cypress/fixtures/example.json')   
@@ -160,7 +133,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     
     })
 
-    it ('seleciona um arquivo simulando um drag-and-drop', function(){  
+    it('seleciona um arquivo simulando um drag-and-drop', function(){  
       cy.get('#file-upload')
         .should('not.have.value')
         .selectFile('./cypress/fixtures/example.json', {action: 'drag-drop'}) // forma como vamos levar o arquivo para o site, no caso arrastando o arquivo pra cima do campo
@@ -172,7 +145,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
   
   })
 
-  it ('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', function(){
+  it('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', function(){
    cy.fixture('example.json').as('sampleFile')
    cy.get('#file-upload')
      .selectFile('@sampleFile')
@@ -182,7 +155,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
   })
 
-  it ('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', function(){
+  it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', function(){
     cy.get('a').should('have.attr', 'target', '_blank')
   })
 
@@ -195,5 +168,50 @@ describe('Central de Atendimento ao Cliente TAT', function() {
   })
 
   
-   
-})
+ it('exibe e esconde as mensagens de sucesso e erro usando o .invoke',function(){
+    cy.get('.success')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      .invoke('hide')
+      .should('not.be.visible')
+    cy.get('.error')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible')
+ })   
+
+ it('preenche a area de texto usando o comando invoke', function(){
+   const longText = Cypress._.repeat('0123456789', 20)
+
+   cy.get('#open-text-area')
+     .invoke('val', longText)   
+     .should('have.value', longText)
+
+  })
+
+ it.only('faz uma requisição HTTP', function(){
+  cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+    .should(function(response){
+    console.log(response)
+    const { status, statusText, body} = response
+    expect(status).to.equal(200)
+    expect(statusText).to.equal('OK')
+    expect(body).to.include('CAC TAT')
+    })
+  })
+
+  it.only('encontra o gato escondido', function(){
+    cy.get('#cat')
+      .invoke('show')
+      .should('be.visible')
+    cy.get('#title') 
+      .invoke('text', 'CAT TAT')
+    cy.get('#subtitle')
+      .invoke('text', 'Eu 🖤 gatos')    
+  })
+}) 
