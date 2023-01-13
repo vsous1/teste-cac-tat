@@ -109,10 +109,10 @@ describe('Central de Atendimento ao Cliente TAT', function() {
   
       it ('marca cada tipo de atendimento', function() {
         cy.get('input[type="radio"]')
-          .should('have.length', 3) //conta quantos elementos tem
-          .each(function($radio) {  // função para selecionar os 3 elementos do botão do tipo radio
-            cy.wrap($radio).check() // check nos 3 botões do tipo radio
-            cy.wrap($radio).should('be.checked') // should para checkar se os 3 botões do tipo radio foram marcados
+          .should('have.length', 3) 
+          .each(function($radio) {  
+            cy.wrap($radio).check() 
+            cy.wrap($radio).should('be.checked') 
           })
          })
   
@@ -140,7 +140,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       it ('seleciona um arquivo simulando um drag-and-drop', function(){  
         cy.get('#file-upload')
           .should('not.have.value')
-          .selectFile('./cypress/fixtures/example.json', {action: 'drag-drop'}) // forma como vamos levar o arquivo para o site, no caso arrastando o arquivo pra cima do campo
+          .selectFile('./cypress/fixtures/example.json', {action: 'drag-drop'}) 
           .should(function($input) {
             console.log($input)
             expect($input[0].files[0].name).to.equal('example.json')
