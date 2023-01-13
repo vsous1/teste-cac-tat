@@ -1,5 +1,5 @@
 {
-  "dependencies": {
-    "cypress": "^12.3.0"
+  "devDependencies": {
+    "cypress": "^9.5.1"
   }
 }

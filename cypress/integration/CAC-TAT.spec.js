@@ -1,10 +1,15 @@
 /// <reference types="Cypress" />
 
+const longText = 'A Ética a Nicômaco ou Ética a Nicómaco é a principal obra de Aristóteles sobre Ética. Nela se expõe sua concepção teleológica e eudaimonista de racionalidade prática, sua concepção da virtude como mediania e suas considerações acerca do papel do hábito e da prudência'
+
+
 
 describe('Central de Atendimento ao Cliente TAT', function() {
     
   beforeEach(() => {
   
+    
+
     cy.visit('./src/index.html')
     })
   
@@ -13,28 +18,43 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.title().should('eq', 'Central de Atendimento ao Cliente TAT')
   })
   
-    it ('Prenche os dados do formulário e verifica se as respostas foram enviadas', function() {
-
-      const longText = 'A Ética a Nicômaco ou Ética a Nicómaco é a principal obra de Aristóteles sobre Ética. Nela se expõe sua concepção teleológica e eudaimonista de racionalidade prática, sua concepção da virtude como mediania e suas considerações acerca do papel do hábito e da prudência'
+    it('Prenche os dados do formulário e verifica se as respostas foram enviadas', function() {
       
-      cy.fillMandatoryFieldsAndSubmit()
+      cy.get('#firstName').type('Victor')
+      cy.get('#lastName').type('Sousa')
+      cy.get('#email').type('teste@teste.com')
+      cy.get('#open-text-area').type(longText, {delay: 0})
+      cy.get('.button').click()
       cy.get('.success').should('be.visible')
     })
 
-    it ('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
-
-      cy.fillIncorrectFields()
+    it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
+      
+      cy.get('#firstName').type('Victor')
+      cy.get('#lastName').type('Sousa')
+      cy.get('#email').type('teste@teste,com')
+      cy.get('#open-text-area').type(longText, {delay: 0})
+      cy.get('.button').click()
+      cy.get('.error').should('be.visible')
     })
 
-    it ('se um valor não-numérico for digitado, seu valor continuará vazio.', function() {
+    it('se um valor não-numérico for digitado, seu valor continuará vazio.', function() {
       
-      cy.fillIncorrectFields()
-        .should('have.value', '')
+        cy.get('#firstName').type('Victor')
+        cy.get('#lastName').type('Sousa')
+        cy.get('#email').type('teste@teste,com')
+        cy.get('#open-text-area').type(longText, {delay: 0})
+        cy.get('#phone').type('abcdefgh')
+          .should('have.value', '')
     })
 
-    it ('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
       
-      cy.fillIncorrectFields()
+      cy.get('#firstName').type('Victor')
+      cy.get('#lastName').type('Sousa')
+      cy.get('#email').type('teste@teste,com')
+      cy.get('#open-text-area').type(longText, {delay: 0})
+      cy.get('#phone').type('abcdefgh')
       .get('#phone-checkbox')
       .check()
       cy.contains('.button', 'Enviar').click()
@@ -78,7 +98,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
     })
   
-    it ('envia o formuário com sucesso usando um comando customizado', function() {
+    it('envia o formuário com sucesso usando um comando customizado', function() {
      
       cy.fillMandatoryFieldsAndSubmit()
       cy.get('.success').should('be.visible')
