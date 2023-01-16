@@ -15,7 +15,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.title().should('eq', 'Central de Atendimento ao Cliente TAT')
   })
   
-    it('Prenche os dados do formulário e verifica se as respostas foram enviadas', function() {
+  it('Prenche os dados do formulário e verifica se as respostas foram enviadas', function() {
       
       cy.clock()
       
@@ -25,7 +25,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.get('.success').should('not.be.visible')
     })
 
-    it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
+  it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
       cy.clock()
 
       cy.fillIncorrectFields()
@@ -34,13 +34,13 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.get('.error').should('not.be.visible')
     })
 
-    it('se um valor não-numérico for digitado, seu valor continuará vazio.', function() {
+  it('se um valor não-numérico for digitado, seu valor continuará vazio.', function() {
         
       cy.get('#phone').type('abcdefgh')
         .should('have.value', '')
     })
 
-    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
+  it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
       
       cy.clock()
 
@@ -53,12 +53,12 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.get('.error').should('not.be.visible')
     })
       
-    it('preenche e limpa os campos nome, sobrenome, email e telefone', function() {
+  it('preenche e limpa os campos nome, sobrenome, email e telefone', function() {
       
       cy.fillAndClear()
     })
 
-    it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function(){
+  it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function(){
 
       cy.clock()
       
@@ -68,7 +68,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.get('.error').should('not.be.visible')
     })
   
-    it('envia o formuário com sucesso usando um comando customizado', function() {
+  it('envia o formuário com sucesso usando um comando customizado', function() {
       cy.clock()
 
       cy.fillMandatoryFieldsAndSubmit()
@@ -77,42 +77,42 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.get('.success').should('not.be.visible')
     })
 
-    it ('seleciona um produto (YouTube) por seu texto', function(){
+  it ('seleciona um produto (YouTube) por seu texto', function(){
 
     cy.get('#product').select('YouTube')
    })
 
-    it('seleciona um produto (Mentoria) por seu valor (value)', function(){
+  it('seleciona um produto (Mentoria) por seu valor (value)', function(){
       
       cy.get('#product')
       .select('Mentoria')
       .should('have.value', 'mentoria')   
     })
 
-    it('seleciona um produto (Blog) por seu índice', function(){
+  it('seleciona um produto (Blog) por seu índice', function(){
       
       cy.get('#product')
       .select(1)
       .should('have.value', 'blog')
     })
 
-    it('marca o tipo de atendimento "Feedback"', function(){
+  it('marca o tipo de atendimento "Feedback"', function(){
       
       cy.get('input[type="radio"][value="feedback"]')
         .click()
         .should('have.value','feedback')
     })
 
-    it('marca cada tipo de atendimento', function() {
+  it('marca cada tipo de atendimento', function() {
       cy.get('input[type="radio"]')
-        .should('have.length', 3) //conta quantos elementos tem
-        .each(function($radio) {  // função para selecionar os 3 elementos do botão do tipo radio
-          cy.wrap($radio).check() // check nos 3 botões do tipo radio
-          cy.wrap($radio).should('be.checked') // should para checkar se os 3 botões do tipo radio foram marcados
+        .should('have.length', 3) 
+        .each(function($radio) { 
+          cy.wrap($radio).check()
+          cy.wrap($radio).should('be.checked') 
         })
        })
 
-    it('marca ambos checkboxes, depois desmarca o último', function(){
+  it('marca ambos checkboxes, depois desmarca o último', function(){
       cy.get('input[type="checkbox"]')
       .check()
       .should('be.checked')
@@ -121,7 +121,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       .should('not.be.checked')
     })
 
-    it('seleciona um arquivo da pasta fixtures', function() {
+  it('seleciona um arquivo da pasta fixtures', function() {
       cy.get('#file-upload')
         .should('not.have.value')   
         .selectFile('./cypress/fixtures/example.json')   
@@ -133,10 +133,10 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     
     })
 
-    it('seleciona um arquivo simulando um drag-and-drop', function(){  
+  it('seleciona um arquivo simulando um drag-and-drop', function(){  
       cy.get('#file-upload')
         .should('not.have.value')
-        .selectFile('./cypress/fixtures/example.json', {action: 'drag-drop'}) // forma como vamos levar o arquivo para o site, no caso arrastando o arquivo pra cima do campo
+        .selectFile('./cypress/fixtures/example.json', {action: 'drag-drop'}) 
         .should(function($input) {
           console.log($input)
           expect($input[0].files[0].name).to.equal('example.json')
